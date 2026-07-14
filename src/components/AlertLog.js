@@ -47,24 +47,34 @@ export default class AlertLog {
     this._elFilter = header.querySelector('#log-filter');
     this._elSearch = header.querySelector('#log-search');
 
-    this._elFilter.addEventListener('change', (e) => {
-      this._filter = e.target.value;
-      this._render();
-    });
+    if (this._elFilter) {
+      this._elFilter.addEventListener('change', (e) => {
+        this._filter = e.target.value;
+        this._render();
+      });
+    }
 
-    this._elSearch.addEventListener('input', (e) => {
-      this._searchQuery = e.target.value.toLowerCase();
-      this._render();
-    });
+    if (this._elSearch) {
+      this._elSearch.addEventListener('input', (e) => {
+        this._searchQuery = e.target.value.toLowerCase();
+        this._render();
+      });
+    }
 
-    header.querySelector('#log-clear').addEventListener('click', () => {
-      this._entries = [];
-      this._render();
-    });
+    const clearBtn = header.querySelector('#log-clear');
+    if (clearBtn) {
+      clearBtn.addEventListener('click', () => {
+        this._entries = [];
+        this._render();
+      });
+    }
 
-    header.querySelector('#log-export').addEventListener('click', () => {
-      this._exportCSV();
-    });
+    const exportBtn = header.querySelector('#log-export');
+    if (exportBtn) {
+      exportBtn.addEventListener('click', () => {
+        this._exportCSV();
+      });
+    }
   }
 
   _bindEvents() {

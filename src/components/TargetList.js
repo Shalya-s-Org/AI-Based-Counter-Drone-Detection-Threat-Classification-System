@@ -94,7 +94,9 @@ export default class TargetList {
     list.sort((a, b) => (threatOrder[a.threatLevel] ?? 4) - (threatOrder[b.threatLevel] ?? 4));
 
     this._sortedIds = list.map((t) => t.id);
-    this._elCount.textContent = list.length + ' contact' + (list.length !== 1 ? 's' : '');
+    if (this._elCount) {
+      this._elCount.textContent = list.length + ' contact' + (list.length !== 1 ? 's' : '');
+    }
 
     const existing = new Map();
     for (const card of this._cards.querySelectorAll('.target-card')) {

@@ -7,6 +7,8 @@ export default class CameraFeed {
     this._targets = new Map();
     this._selectedTargetId = null;
     this._channel = 'OPTICAL';
+    this._animFrameId = null;
+    this._lastTime = 0;
 
     this._buildDOM();
     this._bindEvents();
@@ -71,8 +73,7 @@ export default class CameraFeed {
         for (const t of header.querySelectorAll('.channel-tab')) {
           t.classList.toggle('active', t === tab);
         }
-        this._elChannel.textContent = this._channel;
-        this._drawFeed();
+        if (this._elChannel) this._elChannel.textContent = this._channel;
       });
     }
   }
@@ -104,7 +105,6 @@ export default class CameraFeed {
 
     this._resizeObserver = new ResizeObserver(() => {
       this._resize();
-      this._drawFeed();
     });
     this._resizeObserver.observe(this._viewport);
   }
@@ -128,7 +128,24 @@ export default class CameraFeed {
     }
   }
 
-  _drawFeed() {
+  render() {
+    this._resize();
+    this._lastTime = performance.now();
+    this._tick(this._lastTime);
+  }
+
+  _tick(timestamp) {
+    if (!this._container.isConnected) return;
+
+    this._animFrameId = requestAnimationFrame((t) => this._tick(t));
+
+    const dt = Math.min((timestamp - this._lastTime) / 1000, 0.1);
+    this._lastTime = timestamp;
+
+    this._drawFeed(dt);
+  }
+
+  _drawFeed(dt) {
     if (!this._ctx || !this._width) return;
     const ctx = this._ctx;
     const w = this._width;
@@ -140,9 +157,10 @@ export default class CameraFeed {
       ctx.fillStyle = 'hsl(220, 20%, 6%)';
       ctx.fillRect(0, 0, w, h);
 
+      const time = Date.now() / 1000;
       for (let i = 0; i < 60; i++) {
-        const y = (Date.now() / 30 + i * 20) % h;
-        ctx.fillStyle = 'hsla(120, 100%, 50%, 0.04)';
+        const y = ((time * 30 + i * 20) % h);
+        ctx.fillStyle = 'hsla(210, 100%, 55%, 0.04)';
         ctx.fillRect(0, y, w, 1);
       }
     } else if (this._channel === 'THERMAL') {
@@ -153,9 +171,9 @@ export default class CameraFeed {
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, w, h);
     } else {
-      ctx.fillStyle = 'hsla(120, 100%, 10%, 0.15)';
+      ctx.fillStyle = 'hsla(210, 100%, 10%, 0.15)';
       ctx.fillRect(0, 0, w, h);
-      ctx.strokeStyle = 'hsla(120, 100%, 50%, 0.05)';
+      ctx.strokeStyle = 'hsla(210, 100%, 55%, 0.05)';
       ctx.lineWidth = 1;
       for (let i = 0; i < w; i += 8) {
         ctx.beginPath();
@@ -174,13 +192,13 @@ export default class CameraFeed {
 
   _updateBBox() {
     if (!this._selectedTargetId) {
-      this._elBbox.style.display = 'none';
+      if (this._elBbox) this._elBbox.style.display = 'none';
       return;
     }
 
     const target = this._targets.get(this._selectedTargetId);
     if (!target) {
-      this._elBbox.style.display = 'none';
+      if (this._elBbox) this._elBbox.style.display = 'none';
       return;
     }
 
@@ -202,33 +220,39 @@ export default class CameraFeed {
     const width = Math.min(rect.width - left, baseSize);
     const height = Math.min(rect.height - top, baseSize * 0.6);
 
-    this._elBbox.style.display = 'block';
-    this._elBbox.style.left = left + 'px';
-    this._elBbox.style.top = top + 'px';
-    this._elBbox.style.width = width + 'px';
-    this._elBbox.style.height = height + 'px';
+    if (this._elBbox) {
+      this._elBbox.style.display = 'block';
+      this._elBbox.style.left = left + 'px';
+      this._elBbox.style.top = top + 'px';
+      this._elBbox.style.width = width + 'px';
+      this._elBbox.style.height = height + 'px';
+    }
 
     const def = THREAT_LEVELS[target.threatLevel] || THREAT_LEVELS.FALSE_POSITIVE;
-    this._elBbox.className = 'camera-bounding-box ' + (target.threatLevel?.toLowerCase() || 'false-positive');
+    if (this._elBbox) {
+      this._elBbox.className = 'camera-bounding-box ' + (target.threatLevel?.toLowerCase() || 'false-positive');
+    }
 
     const label = target.targetLabel || 'Unknown';
     const conf = Math.min(99, 60 + target.threatScore).toFixed(0);
-    this._elClassification.textContent = `${target.id} | ${label} | ${conf}% | ${def.label}`;
-    this._elClassification.style.color = def.color;
-    this._elClassification.style.borderColor = def.color;
+    if (this._elClassification) {
+      this._elClassification.textContent = `${target.id} | ${label} | ${conf}% | ${def.label}`;
+      this._elClassification.style.color = def.color;
+      this._elClassification.style.borderColor = def.color;
+    }
 
-    this._elAz.textContent = ((target.theta * 180 / Math.PI) % 360).toFixed(0).padStart(3, '0') + '°';
-    this._elEl.textContent = (target.altitude > 200 ? '+' : '') + (target.altitude / 10).toFixed(0).padStart(2, '0') + '°';
-    this._elZoom.textContent = (1 + (RADAR_CONFIG.maxRange - target.r) / RADAR_CONFIG.maxRange * 2).toFixed(1) + 'x';
-  }
-
-  render() {
-    this._resize();
-    this._drawFeed();
+    if (this._elAz) this._elAz.textContent = ((target.theta * 180 / Math.PI) % 360).toFixed(0).padStart(3, '0') + '°';
+    if (this._elEl) this._elEl.textContent = (target.altitude > 200 ? '+' : '') + (target.altitude / 10).toFixed(0).padStart(2, '0') + '°';
+    if (this._elZoom) this._elZoom.textContent = (1 + (RADAR_CONFIG.maxRange - target.r) / RADAR_CONFIG.maxRange * 2).toFixed(1) + 'x';
   }
 
   destroy() {
-    if (this._resizeObserver) this._resizeObserver.disconnect();
+    if (this._animFrameId) {
+      cancelAnimationFrame(this._animFrameId);
+    }
+    if (this._resizeObserver) {
+      this._resizeObserver.disconnect();
+    }
     this._container.innerHTML = '';
   }
 }

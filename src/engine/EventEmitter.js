@@ -22,6 +22,13 @@ export class EventEmitter {
      * @type {Map<string, Set<Function>>}
      */
     this._listeners = new Map();
+
+    /**
+     * Registry of once-wrappers keyed by original callback.
+     * @private
+     * @type {Map<Function, Function>}
+     */
+    this._onceWrappers = new Map();
   }
 
   /* ──────────────────── Subscribe ──────────────────── */
@@ -52,11 +59,29 @@ export class EventEmitter {
    */
   off(event, callback) {
     const set = this._listeners.get(event);
-    if (set) {
-      set.delete(callback);
-      if (set.size === 0) {
-        this._listeners.delete(event);
+    if (!set) {
+      // Also check if this is an original callback of a once-wrapped listener.
+      const wrapper = this._onceWrappers.get(callback);
+      if (wrapper) {
+        this._listeners.forEach((listeners, evt) => {
+          listeners.delete(wrapper);
+        });
+        this._onceWrappers.delete(callback);
       }
+      return;
+    }
+
+    set.delete(callback);
+
+    // If callback is an original of a once-wrapper, remove the wrapper too.
+    const wrapper = this._onceWrappers.get(callback);
+    if (wrapper) {
+      set.delete(wrapper);
+      this._onceWrappers.delete(callback);
+    }
+
+    if (set.size === 0) {
+      this._listeners.delete(event);
     }
   }
 
@@ -71,12 +96,12 @@ export class EventEmitter {
   once(event, callback) {
     const wrapper = (...args) => {
       this.off(event, wrapper);
+      this._onceWrappers.delete(callback);
       callback(...args);
     };
 
-    // Attach a reference so `off(event, callback)` still works
-    // if the consumer holds onto the original function.
-    wrapper._originalCallback = callback;
+    // Track the mapping so `off(event, originalCallback)` can find the wrapper.
+    this._onceWrappers.set(callback, wrapper);
 
     return this.on(event, wrapper);
   }
@@ -116,6 +141,7 @@ export class EventEmitter {
       this._listeners.delete(event);
     } else {
       this._listeners.clear();
+      this._onceWrappers.clear();
     }
   }
 

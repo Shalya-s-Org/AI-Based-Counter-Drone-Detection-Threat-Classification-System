@@ -1125,3 +1125,76 @@
     background-position: 200% 0%;
   }
 }
+
+@keyframes panel-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes card-hover-lift {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.glass-panel {
+  animation: panel-enter 0.5s ease both;
+}
+
+.target-card {
+  animation: panel-enter 0.4s ease both;
+}
+
+.target-card:hover {
+  animation: card-hover-lift 0.2s ease both;
+}
+
+.header-logo-icon {
+  position: relative;
+  overflow: hidden;
+}
+
+.header-logo-icon::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    hsla(210, 100%, 80%, 0.15) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+.cm-button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.cm-button.active {
+  animation: pulse-border 1.5s ease infinite, panel-enter 0.3s ease both;
+}
+
+.log-entry {
+  animation: slide-in 0.3s ease both;
+}
+

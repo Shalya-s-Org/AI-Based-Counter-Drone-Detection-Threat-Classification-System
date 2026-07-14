@@ -31,6 +31,7 @@ export default class Controls {
       const btn = document.createElement('button');
       btn.className = `cm-button ${key.toLowerCase()}`;
       btn.dataset.type = key;
+      btn.title = key === 'ALARM' ? 'Air-Raid Alarm (no target required)' : 'Select a target first';
       btn.innerHTML = `
         <div class="cm-button-icon">&#x1F6F1;</div>
         <div class="cm-button-label">${def.label}</div>
@@ -78,6 +79,13 @@ export default class Controls {
         this._updateUI();
       }
     });
+
+    this._emitter.on(EVENT_TYPES.TARGET_SPAWN, (target) => {
+      if (!this._selectedTargetId) {
+        this._selectedTargetId = target.id;
+        this._updateUI();
+      }
+    });
   }
 
   activate(typeKey) {
@@ -112,10 +120,12 @@ export default class Controls {
   }
 
   _updateUI() {
-    if (this._selectedTargetId) {
-      this._elInfo.textContent = 'Selected: ' + this._selectedTargetId;
-    } else {
-      this._elInfo.textContent = 'No target selected';
+    if (this._elInfo) {
+      if (this._selectedTargetId) {
+        this._elInfo.textContent = 'Selected: ' + this._selectedTargetId;
+      } else {
+        this._elInfo.textContent = 'No target selected';
+      }
     }
 
     for (const [key, btn] of Object.entries(this._buttons)) {
