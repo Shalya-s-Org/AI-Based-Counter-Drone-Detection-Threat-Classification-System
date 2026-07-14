@@ -35,6 +35,10 @@ export default class Radar {
     this._container.appendChild(this._wrapper);
     this._ctx = this._canvas.getContext('2d');
 
+    this._staticCanvas = document.createElement('canvas');
+    this._staticCtx = this._staticCanvas.getContext('2d');
+    this._staticDirty = true;
+
     const corners = ['tl', 'tr', 'bl', 'br'];
     for (const pos of corners) {
       const corner = document.createElement('div');
@@ -166,6 +170,11 @@ export default class Radar {
       this._ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       this._width = w;
       this._height = h;
+
+      this._staticCanvas.width = w * dpr;
+      this._staticCanvas.height = h * dpr;
+      this._staticCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      this._staticDirty = true;
     }
   }
 
@@ -189,9 +198,15 @@ export default class Radar {
     const cy = h / 2;
     const maxR = Math.min(cx, cy) - 10;
 
-    ctx.clearRect(0, 0, w, h);
+    if (this._staticDirty) {
+      this._staticCtx.clearRect(0, 0, w, h);
+      this._drawBackground(this._staticCtx, cx, cy, maxR);
+      this._staticDirty = false;
+    }
 
-    this._drawBackground(ctx, cx, cy, maxR);
+    ctx.clearRect(0, 0, w, h);
+    ctx.drawImage(this._staticCanvas, 0, 0, w, h);
+
     this._drawSweep(ctx, cx, cy, maxR);
     this._drawBlips(ctx, cx, cy, maxR);
     this._drawSelection(ctx, cx, cy, maxR);

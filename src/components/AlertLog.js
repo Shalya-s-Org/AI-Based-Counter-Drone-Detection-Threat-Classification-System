@@ -29,6 +29,7 @@ export default class AlertLog {
         </select>
         <input type="text" class="glass-input" id="log-search" placeholder="Search..." style="width:120px;padding:4px 8px;font-size:11px;" />
         <button class="glass-button" id="log-clear" style="padding:4px 10px;font-size:11px;">Clear</button>
+        <button class="glass-button" id="log-export" style="padding:4px 10px;font-size:11px;">Export CSV</button>
       </div>
     `;
 
@@ -59,6 +60,10 @@ export default class AlertLog {
     header.querySelector('#log-clear').addEventListener('click', () => {
       this._entries = [];
       this._render();
+    });
+
+    header.querySelector('#log-export').addEventListener('click', () => {
+      this._exportCSV();
     });
   }
 
@@ -138,6 +143,27 @@ export default class AlertLog {
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
+  }
+
+  _exportCSV() {
+    const headers = ['Timestamp', 'Level', 'Message'];
+    const rows = this._entries.map((entry) => {
+      const date = new Date(entry.timestamp);
+      const ts = date.toISOString();
+      const escapedMessage = entry.message.replace(/"/g, '""');
+      return [ts, entry.level, `"${escapedMessage}"`];
+    });
+
+    const csv = [headers.join(','), ...rows.map((r) => r.join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `alert-log-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   }
 
   render() {
