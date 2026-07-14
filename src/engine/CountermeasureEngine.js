@@ -202,6 +202,8 @@ export class CountermeasureEngine {
                   targetId: state.targetId,
                   result: 'HIT',
                 });
+
+                this._transitionToCooldown(typeKey, state, now);
               }
             }
             break;
@@ -218,8 +220,7 @@ export class CountermeasureEngine {
         const durationMs = cmDef.duration;
         if (durationMs !== null && elapsed >= durationMs) {
           this._transitionToCooldown(typeKey, state, now);
-        } else if (durationMs === null) {
-          // Instantaneous types move straight to cooldown on next frame.
+        } else if (durationMs === null && typeKey !== 'KINETIC') {
           this._transitionToCooldown(typeKey, state, now);
         }
       }
