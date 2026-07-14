@@ -26,6 +26,7 @@
     "vite": "^8.1.4"
   },
   "devDependencies": {
+    "terser": "^5.49.0",
     "vitest": "^4.1.10"
   }
 }
