@@ -33,7 +33,7 @@ export default class App {
     dashboard.className = 'dashboard';
 
     dashboard.innerHTML = `
-      <div class="header-area glass-panel">
+      <div class="header-area glass-panel-elevated">
         <div id="header-bar"></div>
       </div>
       <div class="radar-area glass-panel">
@@ -42,13 +42,15 @@ export default class App {
       <div class="camera-area glass-panel">
         <div id="camera-container" class="camera-container"></div>
       </div>
-      <div class="targets-area glass-panel">
-        <div id="targets-container" class="target-list-container"></div>
-      </div>
-      <div class="controls-log-area glass-panel">
-        <div class="controls-log-wrapper">
-          <div id="controls-container" class="controls-section"></div>
-          <div id="alertlog-container" class="alert-log-section"></div>
+      <div class="right-panel-area">
+        <div class="right-panel-top glass-panel">
+          <div id="targets-container" class="target-list-container"></div>
+        </div>
+        <div class="right-panel-bottom glass-panel">
+          <div class="controls-log-wrapper">
+            <div id="controls-container" class="controls-section"></div>
+            <div id="alertlog-container" class="alert-log-section"></div>
+          </div>
         </div>
       </div>
     `;

@@ -34,6 +34,13 @@ export default class Radar {
 
     this._container.appendChild(this._wrapper);
     this._ctx = this._canvas.getContext('2d');
+
+    const corners = ['tl', 'tr', 'bl', 'br'];
+    for (const pos of corners) {
+      const corner = document.createElement('div');
+      corner.className = 'corner-bracket ' + pos;
+      this._wrapper.appendChild(corner);
+    }
   }
 
   _bindEvents() {

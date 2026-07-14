@@ -61,6 +61,13 @@ export default class HeaderBar {
     this._el.elapsed = bar.querySelector('#stat-elapsed');
     this._el.statusDot = bar.querySelector('#system-status-dot');
     this._el.statusText = bar.querySelector('#system-status-text');
+
+    const corners = ['tl', 'tr', 'bl', 'br'];
+    for (const pos of corners) {
+      const corner = document.createElement('div');
+      corner.className = 'corner-bracket ' + pos;
+      bar.appendChild(corner);
+    }
   }
 
   updateStats(stats) {
