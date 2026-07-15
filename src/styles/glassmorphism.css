@@ -1,0 +1,319 @@
+/* ═══════════════════════════════════════════════════════════════════
+   AeroGuard AI — Glassmorphism Effects
+   Backdrop-blur, glass panels, glow effects
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Glass Panel Base ───────────────────────────────────────── */
+.glass-panel {
+  background: var(--bg-panel);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Subtle top-edge highlight */
+.glass-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20px;
+  right: 20px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsla(190, 80%, 55%, 0.15),
+    transparent
+  );
+  pointer-events: none;
+}
+
+/* ─── Glass Card (inside panels) ─────────────────────────────── */
+.glass-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
+  position: relative;
+}
+
+.glass-card:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-accent);
+}
+
+.glass-card.selected {
+  border-color: var(--border-active);
+  box-shadow: var(--shadow-glow-cyan);
+  background: hsla(190, 30%, 15%, 0.4);
+}
+
+/* ─── Threat-Level Border Cards ──────────────────────────────── */
+.glass-card.threat-critical {
+  border-left: 3px solid var(--color-critical);
+}
+
+.glass-card.threat-critical.selected {
+  box-shadow: var(--shadow-glow-red);
+  border-color: var(--color-critical);
+  border-left: 3px solid var(--color-critical);
+}
+
+.glass-card.threat-warning {
+  border-left: 3px solid var(--color-warning);
+}
+
+.glass-card.threat-low {
+  border-left: 3px solid var(--color-low);
+}
+
+.glass-card.threat-false-positive {
+  border-left: 3px solid var(--color-false-positive);
+}
+
+/* ─── Glow Effects ───────────────────────────────────────────── */
+.glow-cyan {
+  box-shadow: 0 0 15px hsla(190, 95%, 55%, 0.2),
+              0 0 30px hsla(190, 95%, 55%, 0.08);
+}
+
+.glow-red {
+  box-shadow: 0 0 15px hsla(0, 80%, 55%, 0.2),
+              0 0 30px hsla(0, 80%, 55%, 0.08);
+}
+
+.glow-amber {
+  box-shadow: 0 0 15px hsla(45, 90%, 55%, 0.2),
+              0 0 30px hsla(45, 90%, 55%, 0.08);
+}
+
+/* ─── Panel Header ───────────────────────────────────────────── */
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--border-primary);
+}
+
+.panel-title {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.panel-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.panel-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.panel-action-btn:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+}
+
+/* ─── Panel Content Area ─────────────────────────────────────── */
+.panel-content {
+  padding: var(--space-md);
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ─── Status Badge ───────────────────────────────────────────── */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 100px;
+  font-family: var(--font-primary);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.status-badge.critical {
+  background: var(--color-critical-dim);
+  color: var(--color-critical);
+  border: 1px solid hsla(0, 80%, 55%, 0.3);
+}
+
+.status-badge.warning {
+  background: var(--color-warning-dim);
+  color: var(--color-warning);
+  border: 1px solid hsla(45, 90%, 55%, 0.3);
+}
+
+.status-badge.low {
+  background: var(--color-low-dim);
+  color: var(--color-low);
+  border: 1px solid hsla(200, 70%, 55%, 0.3);
+}
+
+.status-badge.false-positive {
+  background: var(--color-false-positive-dim);
+  color: var(--color-false-positive);
+  border: 1px solid hsla(120, 60%, 50%, 0.3);
+}
+
+/* ─── Action Buttons ─────────────────────────────────────────── */
+.action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: var(--space-md) var(--space-lg);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.action-btn:hover:not(:disabled) {
+  background: var(--bg-card-hover);
+  border-color: var(--border-accent);
+  transform: translateY(-1px);
+}
+
+.action-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.action-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.action-btn.active {
+  border-color: var(--accent-cyan);
+  box-shadow: var(--shadow-glow-cyan);
+  animation: status-pulse 2s infinite;
+}
+
+.action-btn .btn-label {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+}
+
+.action-btn .btn-sublabel {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+/* Active state ripple */
+.action-btn.active::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    transparent 40%,
+    hsla(190, 95%, 55%, 0.05) 50%,
+    transparent 60%
+  );
+  background-size: 200% 200%;
+  animation: shimmer 3s infinite;
+}
+
+/* ─── Data Value Display ─────────────────────────────────────── */
+.data-value {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.data-label {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.data-unit {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  font-weight: 400;
+  margin-left: 2px;
+}
+
+/* ─── Live Indicator ─────────────────────────────────────────── */
+.live-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  color: var(--color-critical);
+}
+
+.live-indicator::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-critical);
+  animation: blink 1.5s infinite;
+}
+
+/* ─── Channel Tabs ───────────────────────────────────────────── */
+.channel-tabs {
+  display: flex;
+  background: var(--bg-input);
+  border-radius: 100px;
+  padding: 2px;
+  gap: 2px;
+}
+
+.channel-tab {
+  padding: 4px 14px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.channel-tab.active {
+  background: var(--bg-card-hover);
+  color: var(--text-primary);
+  box-shadow: 0 1px 4px hsla(0, 0%, 0%, 0.3);
+}
+
+.channel-tab:hover:not(.active) {
+  color: var(--text-secondary);
+}

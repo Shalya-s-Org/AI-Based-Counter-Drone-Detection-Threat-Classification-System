@@ -1,0 +1,454 @@
+/* ═══════════════════════════════════════════════════════════════════
+   AeroGuard AI — Component Styles
+   Specific styles for HeaderBar, Radar, ActiveTargets, etc.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Header Bar ─────────────────────────────────────────────── */
+.header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-lg);
+  background: transparent;
+  height: 52px;
+  user-select: none;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.header-logo {
+  width: 28px;
+  height: 28px;
+  color: var(--accent-cyan);
+}
+
+.header-title {
+  font-family: var(--font-primary);
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 0.5px;
+}
+
+.header-title span {
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+.header-stats {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xl);
+}
+
+.header-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.header-stat-value {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.header-stat-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.header-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.header-action-btn:hover {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border-color: var(--border-accent);
+}
+
+.header-action-btn.active {
+  color: var(--accent-cyan);
+  border-color: var(--accent-cyan);
+}
+
+/* ─── Radar Panel ────────────────────────────────────────────── */
+.radar-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.radar-canvas-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.radar-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.radar-overlay-tl,
+.radar-overlay-tr {
+  position: absolute;
+  top: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  background: hsla(220, 30%, 8%, 0.85);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  line-height: 1.6;
+  pointer-events: none;
+}
+
+.radar-overlay-tl { left: var(--space-md); }
+.radar-overlay-tr { right: var(--space-md); }
+
+.radar-overlay-value {
+  color: var(--text-primary);
+  font-weight: 600;
+  float: right;
+  margin-left: var(--space-lg);
+}
+
+/* ─── Target Card ────────────────────────────────────────────── */
+.target-card {
+  padding: var(--space-md);
+  cursor: pointer;
+  animation: fade-in 0.3s ease forwards;
+}
+
+.target-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-sm);
+}
+
+.target-card-id {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-md);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.target-card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: var(--space-sm);
+}
+
+.target-card-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.target-card-stat .data-label {
+  font-size: 0.6rem;
+}
+
+.target-card-stat .data-value {
+  font-size: var(--font-size-sm);
+}
+
+.target-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--space-sm);
+  padding-top: var(--space-sm);
+  border-top: 1px solid var(--border-primary);
+}
+
+.target-card-eta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+}
+
+.target-card-eta.critical {
+  color: var(--color-critical);
+}
+
+.target-card-eta.warning {
+  color: var(--color-warning);
+}
+
+.target-card-eta i {
+  width: 14px;
+  height: 14px;
+}
+
+/* ─── Camera Feed ────────────────────────────────────────────── */
+.camera-feed-panel .panel-header {
+  padding: var(--space-sm) var(--space-lg);
+}
+
+.camera-viewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: hsl(220, 20%, 5%);
+  overflow: hidden;
+}
+
+.camera-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.camera-hud-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.camera-info-bl {
+  position: absolute;
+  bottom: var(--space-sm);
+  left: var(--space-sm);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.camera-live-badge {
+  position: absolute;
+  top: var(--space-sm);
+  left: var(--space-sm);
+}
+
+/* ─── Target Telemetry ───────────────────────────────────────── */
+.telemetry-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-md);
+}
+
+.telemetry-target-id {
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.telemetry-actions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+.telemetry-action-icon {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.telemetry-action-icon:hover {
+  color: var(--accent-cyan);
+  border-color: var(--border-accent);
+}
+
+.telemetry-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-md);
+}
+
+.telemetry-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.telemetry-stat .data-value {
+  font-size: var(--font-size-lg);
+}
+
+.telemetry-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-md);
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--border-primary);
+}
+
+.signal-strength-container {
+  margin-top: var(--space-md);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--border-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.signal-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 30px;
+}
+
+.signal-bar {
+  width: 6px;
+  border-radius: 2px 2px 0 0;
+  transition: height var(--transition-fast);
+}
+
+/* ─── Controls / Quick Actions ───────────────────────────────── */
+.controls-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm);
+}
+
+.cm-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: var(--space-md);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  color: var(--text-primary);
+  font-family: var(--font-primary);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  min-height: 60px;
+}
+
+.cm-btn:hover:not(:disabled):not(.cooldown) {
+  transform: translateY(-1px);
+  border-color: var(--border-accent);
+  background: var(--bg-card-hover);
+}
+
+.cm-btn:active:not(:disabled):not(.cooldown) {
+  transform: translateY(0);
+}
+
+.cm-btn.active {
+  border-color: var(--accent-cyan);
+  box-shadow: var(--shadow-glow-cyan);
+}
+
+.cm-btn.cooldown {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cm-btn .cm-name {
+  font-weight: 600;
+  font-size: var(--font-size-sm);
+}
+
+.cm-btn .cm-cooldown {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+/* ─── Alert Log ──────────────────────────────────────────────── */
+.log-entries {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.log-entry {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  animation: fade-in 0.2s ease forwards;
+  transition: background var(--transition-fast);
+}
+
+.log-entry:hover {
+  background: var(--bg-card);
+}
+
+.log-timestamp {
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.log-icon {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+}
+
+.log-message {
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.log-entry.critical .log-icon { color: var(--color-critical); }
+.log-entry.warning .log-icon { color: var(--color-warning); }
+.log-entry.low .log-icon { color: var(--color-low); }
+.log-entry.info .log-icon { color: var(--accent-cyan); }
+
+/* ─── Tooltip ────────────────────────────────────────────────── */
+.radar-tooltip {
+  position: absolute;
+  padding: var(--space-sm) var(--space-md);
+  background: hsla(220, 30%, 10%, 0.95);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: var(--font-size-xs);
+  color: var(--text-primary);
+  pointer-events: none;
+  z-index: var(--z-tooltip);
+  white-space: nowrap;
+  box-shadow: var(--shadow-md);
+}

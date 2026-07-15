@@ -1,0 +1,115 @@
+/* ═══════════════════════════════════════════════════════════════════
+   AeroGuard AI — Dashboard Layout
+   CSS Grid system for 3-column tactical layout
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Main Dashboard Grid ────────────────────────────────────── */
+.dashboard {
+  display: grid;
+  grid-template-columns: 300px 1fr 340px;
+  grid-template-rows: 52px 1fr;
+  grid-template-areas:
+    "header  header   header"
+    "sidebar radar    right-panel";
+  gap: 10px;
+  height: 100vh;
+  width: 100vw;
+  padding: 10px;
+  padding-top: 0;
+  background: var(--bg-primary);
+  overflow: hidden;
+}
+
+/* ─── Grid Area Assignments ──────────────────────────────────── */
+.header-bar {
+  grid-area: header;
+}
+
+.sidebar-panel {
+  grid-area: sidebar;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.radar-panel {
+  grid-area: radar;
+  min-height: 0;
+}
+
+.right-panel {
+  grid-area: right-panel;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+}
+
+/* ─── Right Panel Sub-Grid ───────────────────────────────────── */
+.right-panel .camera-feed-panel {
+  flex: 0 0 220px;
+}
+
+.right-panel .telemetry-panel {
+  flex: 0 0 190px;
+}
+
+.right-panel .controls-panel {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* ─── Responsive: Tablet ─────────────────────────────────────── */
+@media (max-width: 1199px) {
+  .dashboard {
+    grid-template-columns: 260px 1fr;
+    grid-template-rows: 52px 1fr 1fr;
+    grid-template-areas:
+      "header  header"
+      "sidebar radar"
+      "sidebar right-panel";
+  }
+
+  .right-panel {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .right-panel .camera-feed-panel,
+  .right-panel .telemetry-panel,
+  .right-panel .controls-panel {
+    flex: 1 1 48%;
+    min-width: 200px;
+  }
+}
+
+/* ─── Responsive: Mobile ─────────────────────────────────────── */
+@media (max-width: 767px) {
+  .dashboard {
+    grid-template-columns: 1fr;
+    grid-template-rows: 48px 1fr;
+    grid-template-areas:
+      "header"
+      "content";
+    padding: 6px;
+    gap: 6px;
+  }
+
+  .sidebar-panel,
+  .radar-panel,
+  .right-panel {
+    grid-area: content;
+  }
+
+  /* Tab-based navigation: only show active */
+  .sidebar-panel { display: none; }
+  .right-panel { display: none; }
+  .radar-panel { display: block; }
+
+  .dashboard.show-targets .sidebar-panel { display: flex; }
+  .dashboard.show-targets .radar-panel { display: none; }
+
+  .dashboard.show-controls .right-panel { display: flex; }
+  .dashboard.show-controls .radar-panel { display: none; }
+}
