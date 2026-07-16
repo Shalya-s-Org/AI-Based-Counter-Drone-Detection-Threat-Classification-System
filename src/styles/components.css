@@ -452,3 +452,100 @@
   white-space: nowrap;
   box-shadow: var(--shadow-md);
 }
+
+/* ─── Dropdown Menu ────────────────────────────────────────── */
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-menu {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 220px;
+  background: var(--bg-panel);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-primary);
+  border-radius: var(--radius-md);
+  padding: var(--space-xs) 0;
+  z-index: 1000;
+  box-shadow: var(--shadow-lg);
+  transform-origin: top right;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+.dropdown-menu.show {
+  display: flex;
+  opacity: 1;
+  transform: scale(1);
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  width: 100%;
+  padding: var(--space-sm) var(--space-md);
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-family: var(--font-primary);
+  font-size: var(--font-size-sm);
+  text-align: left;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.dropdown-item:hover {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.dropdown-item i, .dropdown-item svg {
+  flex-shrink: 0;
+}
+
+.dropdown-divider {
+  height: 1px;
+  background: var(--border-primary);
+  margin: var(--space-xs) 0;
+}
+
+/* Custom styles for threat items */
+.dropdown-item.threat-critical {
+  color: rgba(224, 55, 55, 0.95);
+}
+.dropdown-item.threat-critical:hover {
+  background: var(--color-critical-dim);
+  color: var(--color-critical);
+}
+
+.dropdown-item.threat-warning {
+  color: rgba(240, 195, 30, 0.95);
+}
+.dropdown-item.threat-warning:hover {
+  background: var(--color-warning-dim);
+  color: var(--color-warning);
+}
+
+.dropdown-item.threat-low {
+  color: rgba(55, 160, 214, 0.95);
+}
+.dropdown-item.threat-low:hover {
+  background: var(--color-low-dim);
+  color: var(--color-low);
+}
+
+.dropdown-item.threat-safe {
+  color: rgba(51, 204, 51, 0.95);
+}
+.dropdown-item.threat-safe:hover {
+  background: var(--color-false-positive-dim);
+  color: var(--color-false-positive);
+}

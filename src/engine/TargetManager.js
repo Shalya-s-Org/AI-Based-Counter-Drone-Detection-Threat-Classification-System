@@ -21,28 +21,57 @@ export class TargetManager {
 
   /**
    * Spawn a new UAV target with randomized state vector.
+   * @param {string|null} threatLevel - Option to force a threat classification level (e.g. CRITICAL, WARNING, LOW, FALSE_POSITIVE)
    * @returns {object} The spawned target
    */
-  spawnTarget() {
+  spawnTarget(threatLevel = null) {
     targetCounter++;
     const id = `${TARGET_CONFIG.idPrefix}-${String(targetCounter).padStart(3, '0')}`;
 
-    // Random UAV type
-    const uavType = UAV_TYPES[randomInt(0, UAV_TYPES.length - 1)];
+    // Select parameters based on threatLevel if requested
+    let uavType;
+    let speed, altitude, rcs, behaviorPattern;
+
+    if (threatLevel === 'CRITICAL') {
+      uavType = UAV_TYPES.find(t => t.name === 'Military Fixed-Wing') || UAV_TYPES[4];
+      speed = randomRange(27, 29);
+      altitude = randomRange(95, 105);
+      rcs = randomRange(1.7, 1.95);
+      behaviorPattern = randomRange(0.9, 1.0);
+    } else if (threatLevel === 'WARNING') {
+      uavType = UAV_TYPES.find(t => t.name === 'Heavy-Lift Hex') || UAV_TYPES[6];
+      speed = randomRange(16, 20);
+      altitude = randomRange(140, 180);
+      rcs = randomRange(0.8, 1.2);
+      behaviorPattern = randomRange(0.7, 0.8);
+    } else if (threatLevel === 'LOW') {
+      uavType = UAV_TYPES.find(t => t.name === 'DJI Phantom') || UAV_TYPES[1];
+      speed = randomRange(8, 12);
+      altitude = randomRange(250, 300);
+      rcs = randomRange(0.1, 0.25);
+      behaviorPattern = randomRange(0.4, 0.5);
+    } else if (threatLevel === 'FALSE_POSITIVE') {
+      uavType = { name: 'Bird / Balloon', rcsRange: [0.01, 0.04], speedRange: [2, 5] };
+      speed = randomRange(2, 5);
+      altitude = randomRange(420, 480);
+      rcs = randomRange(0.01, 0.04);
+      behaviorPattern = randomRange(0.05, 0.15);
+    } else {
+      // Default random selection
+      uavType = UAV_TYPES[randomInt(0, UAV_TYPES.length - 1)];
+      speed = randomRange(TARGET_CONFIG.speed.min, TARGET_CONFIG.speed.max);
+      altitude = randomRange(TARGET_CONFIG.altitude.min, TARGET_CONFIG.altitude.max);
+      rcs = randomRange(uavType.rcsRange[0], uavType.rcsRange[1]);
+      behaviorPattern = randomRange(TARGET_CONFIG.behaviorPattern.min, TARGET_CONFIG.behaviorPattern.max);
+    }
 
     // Spawn at edge of radar range
     const theta = randomRange(0, Math.PI * 2);
     const r = randomRange(TARGET_CONFIG.despawnRadius * 0.8, TARGET_CONFIG.despawnRadius * 0.95) * RADAR_MAX_RANGE();
 
     // Velocity — move inward (negative radial velocity)
-    const speed = randomRange(TARGET_CONFIG.speed.min, TARGET_CONFIG.speed.max);
-    const v = -speed * randomRange(0.3, 1.0); // inward
+    const v = -speed * (threatLevel ? randomRange(0.85, 1.0) : randomRange(0.3, 1.0)); // inward
     const omega = randomRange(TARGET_CONFIG.angularVelocity.min, TARGET_CONFIG.angularVelocity.max);
-
-    // Physical properties
-    const altitude = randomRange(TARGET_CONFIG.altitude.min, TARGET_CONFIG.altitude.max);
-    const rcs = randomRange(uavType.rcsRange[0], uavType.rcsRange[1]);
-    const behaviorPattern = randomRange(TARGET_CONFIG.behaviorPattern.min, TARGET_CONFIG.behaviorPattern.max);
 
     const target = {
       id,

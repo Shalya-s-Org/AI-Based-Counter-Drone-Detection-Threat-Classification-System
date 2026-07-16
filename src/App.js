@@ -91,8 +91,8 @@ export class App {
     this._wireAudioAlerts();
 
     // ── Listen for Demo Spawn Requests ─────────────────────────
-    this.eventBus.on('demo:spawn', () => {
-      this.targetManager.spawnTarget();
+    this.eventBus.on('demo:spawn', ({ threatLevel } = {}) => {
+      this.targetManager.spawnTarget(threatLevel);
     });
 
     // ── Start Simulation ──────────────────────────────────────

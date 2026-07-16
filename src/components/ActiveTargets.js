@@ -171,8 +171,9 @@ export class ActiveTargets {
   }
 
   _computeETA(target) {
-    if (target.v >= 0) return '∞';
+    if (target.v >= -0.1) return '∞';
     const timeToCenter = Math.abs(target.r / target.v);
+    if (timeToCenter > 3600) return '∞';
     const mins = Math.floor(timeToCenter / 60);
     const secs = Math.floor(timeToCenter % 60);
     return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}:00`;

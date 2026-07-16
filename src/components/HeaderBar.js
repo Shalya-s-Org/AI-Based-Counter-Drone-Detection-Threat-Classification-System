@@ -59,9 +59,34 @@ export class HeaderBar {
       </div>
 
       <div class="header-actions">
-        <button class="header-action-btn" id="btn-spawn" title="Introduce Threat Target (Demo)" style="border-color: rgba(224, 55, 55, 0.4); color: rgba(224, 55, 55, 0.85);">
-          <i data-lucide="plus-circle" style="width:18px;height:18px"></i>
-        </button>
+        <div class="dropdown" id="spawn-dropdown">
+          <button class="header-action-btn" id="btn-spawn" title="Introduce Threat Target (Demo)" style="border-color: rgba(224, 55, 55, 0.4); color: rgba(224, 55, 55, 0.85);">
+            <i data-lucide="plus-circle" style="width:18px;height:18px"></i>
+          </button>
+          <div class="dropdown-menu glass-panel" id="spawn-menu">
+            <div class="dropdown-item" data-threat-level="RANDOM">
+              <i data-lucide="shuffle" style="width:16px;height:16px;color:var(--text-secondary)"></i>
+              <span>Random Target</span>
+            </div>
+            <div class="dropdown-divider"></div>
+            <div class="dropdown-item threat-critical" data-threat-level="CRITICAL">
+              <i data-lucide="shield-alert" style="width:16px;height:16px"></i>
+              <span>Critical Threat</span>
+            </div>
+            <div class="dropdown-item threat-warning" data-threat-level="WARNING">
+              <i data-lucide="alert-triangle" style="width:16px;height:16px"></i>
+              <span>Warning Threat</span>
+            </div>
+            <div class="dropdown-item threat-low" data-threat-level="LOW">
+              <i data-lucide="navigation" style="width:16px;height:16px"></i>
+              <span>Low Threat</span>
+            </div>
+            <div class="dropdown-item threat-safe" data-threat-level="FALSE_POSITIVE">
+              <i data-lucide="feather" style="width:16px;height:16px"></i>
+              <span>False Positive</span>
+            </div>
+          </div>
+        </div>
         <button class="header-action-btn" id="btn-audio" title="Toggle Audio Alerts">
           <i data-lucide="volume-2" style="width:18px;height:18px"></i>
         </button>
@@ -83,13 +108,37 @@ export class HeaderBar {
     this.statTime = this.el.querySelector('#stat-time');
     this.btnAudio = this.el.querySelector('#btn-audio');
     this.btnSpawn = this.el.querySelector('#btn-spawn');
+    this.spawnMenu = this.el.querySelector('#spawn-menu');
 
     // Initialize Lucide icons
     if (window.lucide) window.lucide.createIcons({ nodes: [this.el] });
 
-    // Spawn threat button click
-    this.btnSpawn.addEventListener('click', () => {
-      this.eventBus.emit('demo:spawn');
+    // Dropdown toggle click
+    this.btnSpawn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.spawnMenu.classList.toggle('show');
+    });
+
+    // Close dropdown on click outside
+    this._clickOutsideHandler = (e) => {
+      if (!this.el.querySelector('#spawn-dropdown').contains(e.target)) {
+        this.spawnMenu.classList.remove('show');
+      }
+    };
+    document.addEventListener('click', this._clickOutsideHandler);
+
+    // Dropdown items click handlers
+    const dropdownItems = this.spawnMenu.querySelectorAll('.dropdown-item');
+    dropdownItems.forEach(item => {
+      item.addEventListener('click', () => {
+        const level = item.dataset.threatLevel;
+        if (level === 'RANDOM') {
+          this.eventBus.emit('demo:spawn');
+        } else {
+          this.eventBus.emit('demo:spawn', { threatLevel: level });
+        }
+        this.spawnMenu.classList.remove('show');
+      });
     });
 
     // Audio toggle
@@ -136,6 +185,9 @@ export class HeaderBar {
 
   destroy() {
     clearInterval(this._clockInterval);
+    if (this._clickOutsideHandler) {
+      document.removeEventListener('click', this._clickOutsideHandler);
+    }
     this.el.remove();
   }
 }

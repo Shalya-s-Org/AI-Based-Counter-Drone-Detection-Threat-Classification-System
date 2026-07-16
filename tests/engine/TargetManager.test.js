@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { TargetManager } from '../../src/engine/TargetManager.js';
 import { EventEmitter } from '../../src/engine/EventEmitter.js';
 import { EVENTS } from '../../src/utils/constants.js';
+import { ThreatClassifier } from '../../src/engine/ThreatClassifier.js';
 
 describe('TargetManager', () => {
   let eventBus;
@@ -132,5 +133,16 @@ describe('TargetManager', () => {
 
     // Should spawn because targets count (0) < minTargets (3 by default)
     expect(targetManager.count).toBeGreaterThan(0);
+  });
+
+  it('should spawn a target matching the requested specific threat level', () => {
+    const classifier = new ThreatClassifier(eventBus);
+    const levels = ['CRITICAL', 'WARNING', 'LOW', 'FALSE_POSITIVE'];
+
+    for (const level of levels) {
+      const target = targetManager.spawnTarget(level);
+      const classification = classifier.classify(target);
+      expect(classification.level).toBe(level);
+    }
   });
 });
